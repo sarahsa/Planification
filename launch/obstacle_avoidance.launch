@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+
+<launch>
+	<include file="$(find minilab_driver)/launch/minilab_driver.launch" />
+
+	<include file="$(find minilab_launch)/launch/minilab_hokuyo.launch" />	
+
+	<param name="scale_linear" value="1.2" type="double"/>
+	<param name="scale_angular" value="1.5" type="double"/>
+	
+        <node pkg="minilab_M2SIR" type="bumpyisback.py" name="BUMPY"  output="screen">
+        </node>
+</launch>
