@@ -1,4 +1,4 @@
-X#!/usr/bin/env python
+#!/usr/bin/env python
 import rospy
 import socket
 import sys
@@ -18,22 +18,24 @@ class Bumpynode(object):
 		self.LidarSub = rospy.Subscriber('scan', LaserScan, self.callback)
 
 	def callback(self, msg):
-	global turnleft
+		global turnleft
 		global turnright
-	angles = np.linspace(msg.angle_min, msg.angle_max, len(msg.ranges))
+		angles = np.linspace(msg.angle_min, msg.angle_max, len(msg.ranges))
 		xy = np.array([[msg.ranges[i]*np.cos(angles[i]) for i in range(len(msg.ranges))],
 				[msg.ranges[i]*np.sin(angles[i]) for i in range(len(msg.ranges))]])
 		print('Range Min : ' + str(min(msg.ranges)))
 		
 		if min(xy[0,:]) < collision_range and 0 < min(xy[1,:]) < (robotwideness/2):
-		turnright = True
-		turnleft = False
-	else if min(xy[0,:]) < collision_range and 0 > min(xy[1,:]) and abs(min(xy[1,:])) > (robotwideness/2):
-				turnright = False
-				turnleft = True 
-	else:
-				turnright = False
-				turnleft = True
+			turnright = True
+			turnleft = False
+
+		else if min(xy[0,:]) < collision_range and 0 > min(xy[1,:]) and abs(min(xy[1,:])) > (robotwideness/2):
+			turnright = False
+			turnleft = True
+ 
+		else:
+			turnright = False
+			turnleft = True
 
 class Keyboardreceiver(object):
 	def __init__(self):
@@ -47,13 +49,14 @@ class Keyboardreceiver(object):
 			msg.linear.x = 0.2; msg.linear.y = 0; msg.linear.z = 0
 			msg.angular.x = 0; msg.angular.y = 0; msg.angular.z = 0
 			self.KeyBoardTrans.publish(msg)
-	else if turnright:
+
+		else if turnright:
 			msg.linear.x = 0; msg.linear.y = 0; msg.linear.z = 0
 			msg.angular.x = 0; msg.angular.y = 0; msg.angular.z = -0.2
 			self.KeyBoardTrans.publish(msg)
 			rospy.sleep(1.)
-	else:
 
+		else:
 			msg.linear.x = 0; msg.linear.y = 0; msg.linear.z = 0
 			msg.angular.x = 0; msg.angular.y = 0; msg.angular.z = 0.2
 			self.KeyBoardTrans.publish(msg)
