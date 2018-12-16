@@ -7,9 +7,9 @@ from sensor_msgs.msg import LaserScan
 from geometry_msgs.msg import Twist
 
 isobstacle = False
-
 collision_range = 0.5
 
+#Creation du node pour traitement de data du laser 
 class Bumpynode(object):
     def __init__(self):
         self.LidarSub = rospy.Subscriber('scan', LaserScan, self.callback)
@@ -28,10 +28,13 @@ class Keyboardreceiver(object):
     def __init__(self):
         self.KeyBoardrec = rospy.Subscriber('cmd_vel_input', Twist, self.callback)
         self.KeyBoardTrans = rospy.Publisher('cmd_vel', Twist, queue_size = 1)
-        print(' yolo ')
+        #For debugging purposes
+	print('Keyboard is working') 
+
     def callback(self, msg):
         global isobstacle
 	print('isObstacle : ' + str(isobstacle))
+
         if not isobstacle:
             self.KeyBoardTrans.publish(msg)
 
@@ -51,6 +54,7 @@ if __name__ == '__main__':
         bumpy_node = Bumpynode()
         keyboard_node = Keyboardreceiver()
         rospy.spin()
+
     except rospy.ROSInterruptException:
         pass
 

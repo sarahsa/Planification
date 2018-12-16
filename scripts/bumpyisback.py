@@ -29,7 +29,7 @@ class Bumpynode(object):
 			turnright = True
 			turnleft = False
 
-		else if min(xy[0,:]) < collision_range and 0 > min(xy[1,:]) and abs(min(xy[1,:])) > (robotwideness/2):
+		elif min(xy[0,:]) < collision_range and 0 > min(xy[1,:]) and abs(min(xy[1,:])) > (robotwideness/2):
 			turnright = False
 			turnleft = True
  
@@ -41,6 +41,7 @@ class Keyboardreceiver(object):
 	def __init__(self):
 		self.KeyBoardTrans = rospy.Publisher('cmd_vel', Twist, queue_size = 1)
 		print(' yolo ')
+	
 	def callback(self, msg):
 		global turnleft
 		global turnright
@@ -50,7 +51,7 @@ class Keyboardreceiver(object):
 			msg.angular.x = 0; msg.angular.y = 0; msg.angular.z = 0
 			self.KeyBoardTrans.publish(msg)
 
-		else if turnright:
+		elif turnright:
 			msg.linear.x = 0; msg.linear.y = 0; msg.linear.z = 0
 			msg.angular.x = 0; msg.angular.y = 0; msg.angular.z = -0.2
 			self.KeyBoardTrans.publish(msg)
@@ -71,6 +72,7 @@ if __name__ == '__main__':
 		bumpy_node = Bumpynode()
 		keyboard_node = Keyboardreceiver()
 		rospy.spin()
+
 	except rospy.ROSInterruptException:
 		pass
 
